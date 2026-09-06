@@ -14,7 +14,7 @@ HTTP 200 alone is not semantic success. Error cards, empty fallback payloads, wr
 
 ## Endpoint matrix
 
-No endpoints have been promoted yet. Discovery begins only after the written design is approved for implementation.
+No endpoints have been promoted yet. The design is approved; endpoint reconnaissance and semantic verification are the first implementation gate.
 
 For each endpoint, record:
 

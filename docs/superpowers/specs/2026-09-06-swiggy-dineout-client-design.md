@@ -1,6 +1,6 @@
 # Swiggy Dineout Client Design
 
-**Status:** Approved architecture and scope; implementation plan intentionally pending user review of this written specification.
+**Status:** Approved for implementation planning on 2026-09-06.
 **Date:** 2026-09-06
 **Repository:** `The-Great-One/swiggy-py`
 

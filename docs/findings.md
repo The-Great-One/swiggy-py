@@ -29,6 +29,12 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Confidence:** User-approved architecture; endpoint-level feasibility still unverified.
 - **Implication:** Authentication cannot be a prerequisite for baseline nearby discovery, and missing enrichment must degrade gracefully.
 
+### 2026-09-06 — Written design approved
+
+- **Observation:** The complete written design was approved for implementation planning.
+- **Confidence:** Explicit user approval.
+- **Implication:** Execution may proceed from the canonical implementation plan, with endpoint reconnaissance remaining the first network-dependent gate.
+
 ## Open investigation questions
 
 - Which current guest web contract powers nearby Dineout discovery?
