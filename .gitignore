@@ -7,6 +7,8 @@ __pycache__/
 .mypy_cache/
 coverage.xml
 .coverage
+.coverage.*
+junit.xml
 htmlcov/
 dist/
 build/
