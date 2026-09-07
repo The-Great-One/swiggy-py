@@ -42,12 +42,12 @@ FORBIDDEN_MUTATION_TERMS = frozenset(
 )
 _SENSITIVE_VALUE = re.compile(
     r"(?ix)(?:"
-    r"authorization\s*[:=]\s*bearer\s+(?!\*{3,}(?:\s|$))[A-Za-z0-9._-]{8,}|"
-    r"cookie\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\\[redacted\\]|redacted)\S+|"
-    r"(?:access|refresh)?_?token\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\\[redacted\\]|redacted)\S+|"
-    r"otp\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\\[redacted\\]|redacted)\S+|"
-    r"password\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\\[redacted\\]|redacted)\S+|"
-    r"session(?:id)?\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\\[redacted\\]|redacted)\S+"
+    r"authorization\s*[:=]\s*bearer\s+(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)[A-Za-z0-9._-]{8,}|"
+    r"cookie\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)\S+|"
+    r"(?:access|refresh)?_?token\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)\S+|"
+    r"otp\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)\S+|"
+    r"password\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)\S+|"
+    r"session(?:id)?\s*[:=]\s*(?!\*{3,}(?:\s|$)|<redacted>|\[redacted\]|redacted)\S+"
     r")"
 )
 _SEMANTIC_SUCCESS_ASSERTION = re.compile(

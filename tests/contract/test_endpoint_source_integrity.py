@@ -115,7 +115,7 @@ def test_redacted_metadata_placeholders_are_allowed() -> None:
         "purpose": "Synthetic endpoint",
         "allowed_inputs": [],
         "observed_fields": ["venues"],
-        "limitations": ["Authorization: Bearer <redacted>"],
+        "limitations": ["Authorization: Bearer <redacted>", "session=[redacted]"],
         "evidence_source": "capture: cookie: *** for synthetic test",
         "semantic_evidence": "",
         "last_verified": None,
