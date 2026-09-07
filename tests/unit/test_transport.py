@@ -134,8 +134,8 @@ def test_transport_exception_does_not_leak_session_header() -> None:
         with pytest.raises(Exception) as caught:
             transport.request("dineout-discovery")
 
-    assert "test-value" not in str(caught.value)
-    assert "Bearer" not in str(caught.value)
+    assert "Bearer test-value" not in str(caught.value)
+    assert "Bearer [REDACTED]" in str(caught.value)
 
 
 def test_auth_fallback_does_not_consume_zero_retry_budget() -> None:

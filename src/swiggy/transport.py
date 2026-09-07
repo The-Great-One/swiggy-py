@@ -15,7 +15,12 @@ import httpx
 
 from swiggy import __version__
 from swiggy.endpoints import Endpoint, EndpointRegistry
-from swiggy.errors import ProviderResponseError, TransportError, UnsafeEndpointError
+from swiggy.errors import (
+    ProviderResponseError,
+    TransportError,
+    UnsafeEndpointError,
+)
+from swiggy.redaction import redact_text
 
 _PATH_PARAMETER = re.compile(r"\{([a-zA-Z][a-zA-Z0-9_]*)\}")
 _SAFE_RESPONSE_HEADERS = frozenset(
@@ -166,7 +171,7 @@ class SwiggyTransport:
                 if attempt >= self.max_retries:
                     raise TransportError(
                         f"GET {endpoint.id!r} failed after bounded retries: "
-                        f"{type(error).__name__}"
+                        f"{type(error).__name__}: {redact_text(str(error))[:200]}"
                     ) from None
                 self.sleeper(self.jitter(min(8.0, 2.0**attempt)))
                 attempt += 1
