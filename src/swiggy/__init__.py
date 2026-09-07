@@ -2,4 +2,6 @@
 
 __version__ = "0.1.0"
 
-__all__ = ["__version__"]
+from swiggy.client import SwiggyClient
+
+__all__ = ["SwiggyClient", "__version__"]
