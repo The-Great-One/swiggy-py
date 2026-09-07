@@ -28,6 +28,16 @@ def test_every_production_python_module_avoids_handwritten_endpoint_literals() -
     assert violations == ()
 
 
+def test_source_scan_ignores_dotted_local_data_filenames(tmp_path: Path) -> None:
+    module = tmp_path / "paths.py"
+    module.write_text(
+        'LOCATION = Path.home().joinpath(".swiggy-py", "location.json")\n',
+        encoding="utf-8",
+    )
+
+    assert find_handwritten_endpoint_literals(tmp_path) == ()
+
+
 def test_source_scan_folds_supported_constant_string_expressions(
     tmp_path: Path,
 ) -> None:
@@ -100,6 +110,21 @@ def test_source_scan_folds_single_percent_and_positional_format(tmp_path: Path) 
     literals = {v.literal for v in find_handwritten_endpoint_literals(tmp_path)}
     assert "/v1/dineout" in literals
     assert "https://api.example.invalid/v1/dineout" in literals
+
+
+def test_source_scan_does_not_bypass_json_urls_or_paths(tmp_path: Path) -> None:
+    module = tmp_path / "json_routes.py"
+    module.write_text(
+        'URL = "https://api.example.invalid/v1/data.json"\nPATH = "/v1/data.json"\n',
+        encoding="utf-8",
+    )
+
+    violations = find_handwritten_endpoint_literals(tmp_path)
+
+    assert {violation.literal for violation in violations} >= {
+        "https://api.example.invalid/v1/data.json",
+        "/v1/data.json",
+    }
 
 
 def test_redacted_metadata_placeholders_are_allowed() -> None:

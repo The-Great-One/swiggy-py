@@ -58,6 +58,7 @@ _SEMANTIC_FAILURE_TEXT = re.compile(
     r"(?i)\b(?:error|login|sign[ -]?in|fallback|unauthorized|forbidden)\b"
 )
 _HOST_LITERAL = re.compile(r"^(?:[a-z0-9-]+\.)+[a-z]{2,63}$", re.IGNORECASE)
+_NON_HOST_SUFFIXES = frozenset({"json", "yaml", "yml", "toml", "txt", "csv"})
 _URL_LITERAL = re.compile(r"^https?://")
 _API_PATH_LITERAL = re.compile(r"^/[A-Za-z0-9_.{}-]+(?:/[A-Za-z0-9_./{}-]+)?$")
 _ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -594,8 +595,10 @@ def _static_string_sequence(node: ast.expr) -> tuple[str, ...] | None:
 def _endpoint_literal_kind(literal: str) -> str | None:
     if _URL_LITERAL.match(literal):
         return "url"
-    if _HOST_LITERAL.fullmatch(literal):
-        return "host"
     if _API_PATH_LITERAL.fullmatch(literal):
         return "path"
+    if literal.rsplit(".", 1)[-1].casefold() in _NON_HOST_SUFFIXES:
+        return None
+    if _HOST_LITERAL.fullmatch(literal):
+        return "host"
     return None
