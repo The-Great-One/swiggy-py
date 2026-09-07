@@ -1,0 +1,32 @@
+{
+  "endpoint_id": "dineout-restaurant-detail",
+  "retrieved_at": "2026-09-07T10:05:00+05:30",
+  "provider_venue_id": "302252",
+  "name": "Farzi Cafe",
+  "locality": "Connaught Place, Delhi",
+  "rating": 4.0,
+  "rating_count_label": "10K ratings",
+  "cuisines": ["Modern Indian", "Continental", "Finger Food"],
+  "cost_for_two": 2000,
+  "hours": {"closing_label": "till 1AM"},
+  "offers": [
+    {"kind": "pre_booking", "text": "Flat 10% off on total bill"},
+    {"kind": "walk_in", "text": "10% cashback"},
+    {"kind": "payment", "text": "Cashback ₹100", "code": "PAYTMUPI"}
+  ],
+  "menu_sections": [
+    {"name": "Lunch", "page_count": 1},
+    {"name": "Food", "page_count": 9},
+    {"name": "Bar", "page_count": 10}
+  ],
+  "amenities": [
+    "Jain food",
+    "Alcohol served",
+    "Reservation available",
+    "Parking available",
+    "Free wifi",
+    "Smoking area",
+    "SwiggyPay accepted"
+  ],
+  "reviews_present": false
+}

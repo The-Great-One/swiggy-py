@@ -49,6 +49,14 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Implication:** Raw browser captures stay outside Git. Derived route inventory is safe to reconcile against `API_ENDPOINTS.md`, but it is not proof that a route is replayable or semantically successful.
 - **Discarded approach:** Retaining redacted response payloads was rejected because even partially sanitized authenticated payloads can preserve unnecessary personal or session data.
 
+### 2026-09-07 — Guest web contracts replayed successfully
+
+- **Observation:** A same-origin guest `GET /dineout` returned HTTP 200 HTML with Next data, restaurant cards, restaurant links, a non-empty next offset indicator, and offer text. A same-origin guest detail GET redirected to the canonical restaurant route and returned HTTP 200 HTML with restaurant ID, rating, offers, menu section/page counts, hours, cuisines, and seven amenities.
+- **Confidence:** `LIVE VERIFIED` for the two web contracts in `API_ENDPOINTS.md`; replay assertions checked semantic fields, not status alone.
+- **Implication:** Version 1 can implement guest HTML/Next-data discovery and detail parsing without login. Reviews were not present in the captured detail payload, so reviews remain an open enrichment contract.
+- **Limitation:** The browser’s provider-selected default was Delhi. Gurugram-specific location routing has not yet been replayed and must not be inferred from this result.
+- **Excluded traffic:** `/dapi/cart` and analytics/telemetry requests were observed but are outside the read-only Dineout contract and are not replayable.
+
 ## Open investigation questions
 
 - Which current guest web contract powers nearby Dineout discovery?

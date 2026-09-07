@@ -1,0 +1,31 @@
+{
+  "endpoint_id": "dineout-discovery",
+  "retrieved_at": "2026-09-07T10:00:00+05:30",
+  "location_label": "Delhi (provider-selected default)",
+  "status_message": "success",
+  "page_offset": {"next_offset_present": true},
+  "cards": [
+    {
+      "provider_venue_id": "302252",
+      "name": "Farzi Cafe",
+      "cuisines": ["Modern Indian", "Continental"],
+      "cost_for_two": 2000,
+      "rating": 4.0,
+      "locality": "Connaught Place, Delhi",
+      "distance_km": 0.7,
+      "booking_available": true,
+      "offer_text": ["Flat 20% off on pre-booking", "Up to 10% off with bank offers"]
+    },
+    {
+      "provider_venue_id": "844896",
+      "name": "The Beer Cafe Biggie",
+      "cuisines": ["Bar Food", "Continental"],
+      "cost_for_two": 1600,
+      "rating": 4.4,
+      "locality": "Connaught Place, Delhi",
+      "distance_km": 0.6,
+      "booking_available": true,
+      "offer_text": ["Up to 10% off with bank offers"]
+    }
+  ]
+}

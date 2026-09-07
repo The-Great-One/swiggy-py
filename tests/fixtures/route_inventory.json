@@ -1,3 +1,16 @@
 {
-  "routes": []
+  "routes": [
+    {
+      "method": "GET",
+      "host": "www.swiggy.com",
+      "path": "/dineout",
+      "in_scope": true
+    },
+    {
+      "method": "GET",
+      "host": "www.swiggy.com",
+      "path": "/restaurants/{city}/{area}/{name}/dineout",
+      "in_scope": true
+    }
+  ]
 }

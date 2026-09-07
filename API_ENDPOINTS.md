@@ -52,7 +52,53 @@ A `LIVE VERIFIED` record additionally requires an ISO 8601 date in `last_verifie
 
 ## Endpoint records
 
-No endpoints have been promoted. The approved design and the captured server-rendered guest page are evidence for further reconnaissance, not authority for a request URL. No URL is inferred from them.
+### dineout-discovery
+
+```endpoint-json
+{
+  "id": "dineout-discovery",
+  "method": "GET",
+  "host": "www.swiggy.com",
+  "path": "/dineout",
+  "state": "LIVE VERIFIED",
+  "auth": "guest",
+  "location": "none",
+  "pagination": "cursor",
+  "purpose": "Guest Dineout discovery page with server-rendered restaurant cards",
+  "allowed_inputs": [],
+  "observed_fields": ["cards", "next_offset", "restaurant_links", "offer_text"],
+  "limitations": ["Default page location is provider-selected; requested Gurugram location still needs explicit browser location validation"],
+  "evidence_source": "replay: browser same-origin GET with redacted semantic assertions",
+  "semantic_evidence": "Response returned cards, next_offset, restaurant_links, and offer_text in guest HTML and Next data",
+  "last_verified": "2026-09-07",
+  "in_scope": true,
+  "safe_to_replay": true
+}
+```
+
+### dineout-restaurant-detail
+
+```endpoint-json
+{
+  "id": "dineout-restaurant-detail",
+  "method": "GET",
+  "host": "www.swiggy.com",
+  "path": "/restaurants/{city}/{area}/{name}/dineout",
+  "state": "LIVE VERIFIED",
+  "auth": "guest",
+  "location": "none",
+  "pagination": "none",
+  "purpose": "Guest Dineout restaurant detail page",
+  "allowed_inputs": ["city", "area", "name"],
+  "observed_fields": ["restaurant_id", "offers", "menu", "amenities", "hours", "rating"],
+  "limitations": ["Canonical redirects may normalize the supplied slug; reviews were not present in the captured detail payload"],
+  "evidence_source": "replay: browser same-origin GET with redacted semantic assertions",
+  "semantic_evidence": "Response returned restaurant_id, offers, menu, amenities, hours, and rating in guest HTML and Next data",
+  "last_verified": "2026-09-07",
+  "in_scope": true,
+  "safe_to_replay": true
+}
+```
 
 ## Coverage reconciliation
 

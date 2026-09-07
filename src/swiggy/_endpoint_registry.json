@@ -1,5 +1,64 @@
 {
-  "endpoints": [],
+  "endpoints": [
+    {
+      "allowed_inputs": [],
+      "auth": "guest",
+      "evidence_source": "replay: browser same-origin GET with redacted semantic assertions",
+      "host": "www.swiggy.com",
+      "id": "dineout-discovery",
+      "in_scope": true,
+      "last_verified": "2026-09-07",
+      "limitations": [
+        "Default page location is provider-selected; requested Gurugram location still needs explicit browser location validation"
+      ],
+      "location": "none",
+      "method": "GET",
+      "observed_fields": [
+        "cards",
+        "next_offset",
+        "restaurant_links",
+        "offer_text"
+      ],
+      "pagination": "cursor",
+      "path": "/dineout",
+      "purpose": "Guest Dineout discovery page with server-rendered restaurant cards",
+      "safe_to_replay": true,
+      "semantic_evidence": "Response returned cards, next_offset, restaurant_links, and offer_text in guest HTML and Next data",
+      "state": "LIVE VERIFIED"
+    },
+    {
+      "allowed_inputs": [
+        "city",
+        "area",
+        "name"
+      ],
+      "auth": "guest",
+      "evidence_source": "replay: browser same-origin GET with redacted semantic assertions",
+      "host": "www.swiggy.com",
+      "id": "dineout-restaurant-detail",
+      "in_scope": true,
+      "last_verified": "2026-09-07",
+      "limitations": [
+        "Canonical redirects may normalize the supplied slug; reviews were not present in the captured detail payload"
+      ],
+      "location": "none",
+      "method": "GET",
+      "observed_fields": [
+        "restaurant_id",
+        "offers",
+        "menu",
+        "amenities",
+        "hours",
+        "rating"
+      ],
+      "pagination": "none",
+      "path": "/restaurants/{city}/{area}/{name}/dineout",
+      "purpose": "Guest Dineout restaurant detail page",
+      "safe_to_replay": true,
+      "semantic_evidence": "Response returned restaurant_id, offers, menu, amenities, hours, and rating in guest HTML and Next data",
+      "state": "LIVE VERIFIED"
+    }
+  ],
   "generated_from": "API_ENDPOINTS.md",
   "schema_version": 1
 }
