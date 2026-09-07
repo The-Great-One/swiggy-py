@@ -1,0 +1,34 @@
+{
+  "status": "success",
+  "offers": [
+    {
+      "title": "Pre-booking discount",
+      "discount": {
+        "type": "percentage",
+        "value": 20,
+        "maximum_amount": 300
+      },
+      "minimum_bill": 1000,
+      "validity": {
+        "from": "2026-09-01",
+        "until": "2026-09-30",
+        "time_window": "18:00-23:00"
+      },
+      "payment": {
+        "methods": ["HDFC Credit Card", "UPI"],
+        "excluded_methods": ["Cash"]
+      },
+      "restrictions": ["One offer per table"],
+      "code": "DINE20",
+      "text": "DO NOT RETAIN THIS PROVIDER COPY"
+    },
+    {
+      "title": "Flat saving",
+      "discount": {"type": "flat", "value": 100},
+      "minimum_order_value": 500,
+      "valid_from": "01/09/2026",
+      "valid_until": "30/09/2026",
+      "eligible_payment_methods": ["SwiggyPay"]
+    }
+  ]
+}

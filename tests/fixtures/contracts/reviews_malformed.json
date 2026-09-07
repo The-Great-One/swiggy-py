@@ -1,0 +1,6 @@
+{
+  "status_message": "success",
+  "reviews": [
+    {"rating": "not-a-rating", "text": "Redacted malformed sample"}
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "status_message": "success",
+  "reviews": [
+    {
+      "review_id": "review-1",
+      "rating": 4.5,
+      "text": "Excellent food and service",
+      "reviewed_at": "2026-09-05T12:00:00Z"
+    },
+    {
+      "id": "review-2",
+      "rating": "3.0",
+      "reviewText": "Good ambience",
+      "created_at": "2026-09-04T18:30:00+00:00"
+    }
+  ],
+  "pagination": {"nextCursor": "cursor-2"}
+}

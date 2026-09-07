@@ -1,0 +1,21 @@
+{
+  "endpoint_id": "dineout-restaurant-detail",
+  "provider_venue_id": "302252",
+  "name": "Farzi Cafe",
+  "coordinates": {"latitude": 28.6328, "longitude": 77.2197},
+  "display_address": "E-11, Inner Circle, Connaught Place",
+  "locality": "Connaught Place, Delhi",
+  "cuisines": ["Modern Indian", "Continental"],
+  "cost_for_two": "2000",
+  "rating": "4.0",
+  "rating_count": 1250,
+  "hours": [
+    {"day": "Monday", "opens_at": "11:00", "closes_at": "23:30", "is_open": true},
+    {"day": "Tuesday", "opens_at": "11:00", "closes_at": "23:30", "is_open": true}
+  ],
+  "menu_sections": [
+    {"name": "Food", "provider_menu_id": "food-1", "url": "https://example.invalid/menu/food-1"},
+    {"name": "Bar", "provider_menu_id": "bar-1"}
+  ],
+  "amenities": ["Alcohol served", "Live music", "Parking available", "Reservation available"]
+}

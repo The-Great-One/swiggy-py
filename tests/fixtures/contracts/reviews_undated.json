@@ -1,0 +1,14 @@
+{
+  "status_message": "success",
+  "reviews": [
+    {
+      "review_id": "review-3",
+      "rating": 5,
+      "text": "Lovely evening"
+    },
+    {
+      "rating": 2.5,
+      "text": "Needs improvement"
+    }
+  ]
+}

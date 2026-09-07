@@ -1,0 +1,8 @@
+{
+  "offers": [
+    {"title": "Expired offer", "discount_percent": 30, "valid_until": "2026-09-06"},
+    {"title": "Disabled offer", "discount_percent": 50, "is_active": false},
+    {"title": "Excluded for this user", "discount_percent": 10, "excluded": true},
+    {"title": "Still available", "discount_percent": 15, "valid_until": "2026-09-30"}
+  ]
+}
