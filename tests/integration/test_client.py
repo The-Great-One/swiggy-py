@@ -190,6 +190,14 @@ def test_network_detail_failure_still_attempts_reviews() -> None:
     assert [failure.stage for failure in client.enrichment_failures] == ["detail"]
 
 
+def test_rank_nearby_uses_requested_offer_mode() -> None:
+    client = SwiggyClient(transport=FixtureTransport())
+
+    ranked = client.rank_nearby("offers", limit=1, max_workers=1)
+
+    assert ranked[0].provider_venue_id == "2"
+
+
 def test_unknown_venue_route_fails_closed() -> None:
     with pytest.raises(ConfigurationError, match="search nearby"):
         SwiggyClient(transport=FixtureTransport()).get_restaurant("missing")

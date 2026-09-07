@@ -13,6 +13,7 @@ from swiggy.errors import ConfigurationError
 from swiggy.models import EnrichmentFailure, VenueRecord
 from swiggy.offers import parse_offers
 from swiggy.provenance import EvidenceState, SourceEvidence
+from swiggy.ranking import rank_venues
 from swiggy.restaurants import RestaurantDetail, parse_restaurant_detail
 from swiggy.transport import TransportResponse
 
@@ -252,16 +253,12 @@ class SwiggyClient:
             if callable(self.ranker):
                 return self.ranker(venues, mode=mode, radius_km=radius_km, limit=limit)
             return self.ranker.rank(venues, mode=mode, radius_km=radius_km, limit=limit)
-        return tuple(
-            sorted(
-                venues,
-                key=lambda venue: (
-                    -(venue.rating if venue.rating is not None else 0.0),
-                    venue.normalized_name,
-                    venue.provider_venue_id,
-                ),
-            )[:limit]
+        ranked = rank_venues(
+            venues,
+            mode=mode,
+            limit=limit,
         )
+        return tuple(item.venue for item in ranked)
 
     def close(self) -> None:
         if not self._closed:

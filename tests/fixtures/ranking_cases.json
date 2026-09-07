@@ -1,0 +1,11 @@
+{
+  "as_of": "2026-09-07T10:00:00+00:00",
+  "modes": ["top-rated", "new", "trending", "offers", "nightlife"],
+  "venues": [
+    {"id": "established", "rating": 4.8, "rating_count": 1000},
+    {"id": "accelerating", "recent_reviews": 4, "older_reviews": 1},
+    {"id": "explicit-new", "freshness": {"kind": "new", "age_days": 5}},
+    {"id": "undated", "reviews": [{"rating": 4.5}, {"rating": 4.0}]},
+    {"id": "expired-offer", "offer": {"discount_percent": 50, "valid_until": "2026-09-06"}}
+  ]
+}

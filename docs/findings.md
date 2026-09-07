@@ -57,6 +57,13 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Limitation:** The browser’s provider-selected default was Delhi. Gurugram-specific location routing has not yet been replayed and must not be inferred from this result.
 - **Excluded traffic:** `/dapi/cart` and analytics/telemetry requests were observed but are outside the read-only Dineout contract and are not replayable.
 
+### 2026-09-07 — Explainable ranking evidence boundary
+
+- **Observation:** Ranking keeps quality, momentum, freshness, offer strength, confidence, and distance as separate components. Quality uses a documented Bayesian prior and log-scaled rating volume; momentum requires dated recent and older review windows; expired offers score zero; nightlife/freshness require explicit provider-declared signals.
+- **Confidence:** Formula-tested deterministic implementation; provider evidence coverage varies by field.
+- **Implication:** High rating alone does not qualify a venue as trending. Missing timestamps or freshness markers produce `insufficient evidence` rather than inferred trends. Distance is reported separately and does not silently alter quality.
+- **Limitation:** The current normalized model has no dedicated new/listed/campaign timestamp field, so freshness remains unavailable unless an explicit provider attribute is present.
+
 ## Open investigation questions
 
 - Which current guest web contract powers nearby Dineout discovery?
