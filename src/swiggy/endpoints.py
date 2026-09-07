@@ -262,7 +262,7 @@ def parse_endpoint_blocks(path: Path) -> list[dict[str, object]]:
             raise LedgerValidationError(
                 f"endpoint-json block {fence_index} is not closed"
             )
-        block = "\\n".join(lines[start + 1 : close])
+        block = "\n".join(lines[start + 1 : close])
         try:
             value = json.loads(block)
         except json.JSONDecodeError as error:

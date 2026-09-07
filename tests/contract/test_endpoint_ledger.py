@@ -213,10 +213,19 @@ def test_production_registry_accepts_only_verified_safe_gets() -> None:
     assert registry.get("synthetic-discovery").path == "/v1/dineout/discovery"
 
 
-def test_package_registry_contains_no_unverified_runtime_endpoints() -> None:
+def test_package_registry_contains_only_verified_runtime_endpoints() -> None:
     registry = EndpointRegistry.from_package_data()
 
-    assert tuple(registry) == ()
+    assert tuple(endpoint.id for endpoint in registry) == (
+        "dineout-discovery",
+        "dineout-restaurant-detail",
+    )
+    assert all(
+        endpoint.state == "LIVE VERIFIED"
+        and endpoint.method == "GET"
+        and endpoint.safe_to_replay
+        for endpoint in registry
+    )
 
 
 def test_reconciliation_reports_missing_excluded_and_undocumented_routes() -> None:
