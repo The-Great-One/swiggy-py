@@ -35,6 +35,13 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Confidence:** Explicit user approval.
 - **Implication:** Execution may proceed from the canonical implementation plan, with endpoint reconnaissance remaining the first network-dependent gate.
 
+### 2026-09-06 — Guest page contains server-rendered Dineout cards
+
+- **Observation:** The official `/dineout` page loaded without login. Its Next.js `pageProps.widgetResponse.success` contained `cards`, `pageOffset`, `firstOffsetRequest`, and `nextFetch`. Card types included a filter/sort widget and a restaurant grid.
+- **Confidence:** CAPTURED browser evidence only; independent HTTP replay and requested-location validation are pending.
+- **Implication:** Server-rendered page data is a potential guest discovery source, but the observed default page showed Delhi, not an approved Gurugram query. Do not claim nearby Gurugram support from this observation.
+- **Privacy:** The surrounding widget envelope contains session/device identifiers and encoded location context; retain only allowlisted restaurant fields in public fixtures.
+
 ## Open investigation questions
 
 - Which current guest web contract powers nearby Dineout discovery?
