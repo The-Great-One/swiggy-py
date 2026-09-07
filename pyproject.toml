@@ -29,6 +29,9 @@ dev = [
     "ruff>=0.6",
 ]
 
+[tool.hatch.build]
+artifacts = ["src/swiggy/_endpoint_registry.json"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/swiggy"]
 
