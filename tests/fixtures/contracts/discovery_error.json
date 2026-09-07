@@ -1,0 +1,7 @@
+{
+  "endpoint_id": "dineout-discovery",
+  "retrieved_at": "2026-09-07T10:03:00+05:30",
+  "status_message": "error",
+  "error": {"code": "LOCATION_UNAVAILABLE", "message": "No restaurants found for this area"},
+  "cards": []
+}

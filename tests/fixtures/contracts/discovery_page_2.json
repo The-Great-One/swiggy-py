@@ -1,0 +1,24 @@
+{
+  "endpoint_id": "dineout-discovery",
+  "retrieved_at": "2026-09-07T10:01:00+05:30",
+  "status_message": "success",
+  "page_offset": {"next_offset": "40"},
+  "cards": [
+    {
+      "provider_venue_id": "302252",
+      "name": "Farzi Cafe",
+      "rating": 3.0,
+      "locality": "Connaught Place, Delhi",
+      "coordinates": {"latitude": 28.5000, "longitude": 77.1000},
+      "offer_text": ["Flat 20% off on pre-booking"]
+    },
+    {
+      "provider_venue_id": "991122",
+      "name": "Synthetic Bistro",
+      "cuisines": ["North Indian"],
+      "cost_for_two": 1200,
+      "rating": 4.1,
+      "locality": "Saket, Delhi"
+    }
+  ]
+}

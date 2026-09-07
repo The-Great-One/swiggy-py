@@ -3,7 +3,7 @@
   "retrieved_at": "2026-09-07T10:00:00+05:30",
   "location_label": "Delhi (provider-selected default)",
   "status_message": "success",
-  "page_offset": {"next_offset_present": true},
+  "page_offset": {"next_offset": "20"},
   "cards": [
     {
       "provider_venue_id": "302252",
