@@ -450,7 +450,7 @@ Run: `uv run pytest tests/unit/test_transport.py tests/security/test_transport_a
 
 **Step 3: Implement minimal transport**
 
-`SwiggyTransport` receives an `httpx.Client`, `EndpointRegistry`, retry policy, sleep function, and optional redacted session provider. It resolves a stable endpoint ID, builds the URL from ledger data, validates allowed input names, performs the request, and returns decoded JSON only after endpoint-specific semantic guards pass.
+`SwiggyTransport` receives an `httpx.Client`, `EndpointRegistry`, retry policy, sleep function, and optional redacted session provider. It resolves a stable endpoint ID, builds the URL from ledger data, validates allowed input names, performs the request, and returns a typed response envelope containing status, headers, text, and an optional decoded JSON payload. HTML/Next-data contracts remain text until their provider-specific parser extracts the data. Every response passes endpoint-specific semantic guards before the envelope is returned.
 
 No Python module, including `endpoints.py`, may contain handwritten production Swiggy host, path, or URL literals. `endpoints.py` constructs requests only from validated fields loaded from the generated registry; that generated artifact is the only runtime copy of values authored in `API_ENDPOINTS.md`.
 
