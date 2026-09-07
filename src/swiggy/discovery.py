@@ -58,14 +58,22 @@ def _cursor(payload: Mapping[str, object]) -> str | None:
     direct = payload.get("next_offset")
     if direct is not None and not isinstance(direct, bool):
         return str(direct)
+    page_offset = payload.get("pageOffset")
+    if isinstance(page_offset, Mapping):
+        value = page_offset.get("nextOffset")
+        if value is not None and not isinstance(value, bool):
+            return str(value)
+        value = page_offset.get("next_offset")
+        if value is not None and not isinstance(value, bool):
+            return str(value)
     pagination = payload.get("pagination")
     if isinstance(pagination, Mapping):
         value = pagination.get("nextCursor")
         if value is not None and not isinstance(value, bool):
             return str(value)
-    page_offset = payload.get("page_offset")
-    if isinstance(page_offset, Mapping):
-        value = page_offset.get("next_offset")
+    page_offset2 = payload.get("page_offset")
+    if isinstance(page_offset2, Mapping):
+        value = page_offset2.get("next_offset")
         if value is not None and not isinstance(value, bool):
             return str(value)
     return None
@@ -170,24 +178,121 @@ def _venue_from_card(
     return VenueRecord(**values, provenance=provenance, unavailable_fields=unavailable)
 
 
+def _normalize_restaurant_info(
+    info: Mapping[str, object],
+    evidence: SourceEvidence,  # noqa: ARG001
+) -> Mapping[str, object]:
+    """Normalize a Swiggy DinersoneRestaurant info dict to flat card format."""
+    result: dict[str, object] = {}
+    rid = info.get("id")
+    if rid is not None:
+        result["provider_venue_id"] = str(rid)
+    name = info.get("name")
+    if isinstance(name, str):
+        result["name"] = name
+    rating = info.get("rating")
+    if isinstance(rating, Mapping):
+        value = rating.get("value")
+        if value is not None and value != "--":
+            try:
+                result["rating"] = float(str(value))
+            except (TypeError, ValueError):
+                pass
+        count = rating.get("count")
+        if count is not None:
+            try:
+                result["rating_count"] = int(str(count))
+            except (TypeError, ValueError):
+                pass
+    cost = info.get("costForTwo")
+    if isinstance(cost, str):
+        digits = re.sub(r"[^\d]", "", cost)
+        if digits:
+            try:
+                result["cost_for_two"] = float(digits)
+            except ValueError:
+                pass
+    cuisines = info.get("cuisines")
+    if isinstance(cuisines, Sequence) and not isinstance(cuisines, (str, bytes)):
+        result["cuisines"] = list(cuisines)
+    locality = info.get("locality")
+    if isinstance(locality, str):
+        result["locality"] = locality
+    return result
+
+
+def _extract_restaurant_cards(cards: Sequence[object]) -> list[Mapping[str, object]]:
+    """Extract restaurant info dicts from nested Swiggy widget cards.
+
+    Handles both the real nested widget structure (GridWidget → restaurants)
+    and flat card fixtures used in tests.
+    """
+    restaurants: list[Mapping[str, object]] = []
+    for card in cards:
+        if not isinstance(card, Mapping):
+            continue
+        # Flat card format (test fixtures): has provider_venue_id or id directly
+        if "provider_venue_id" in card or ("id" in card and "card" not in card):
+            restaurants.append(card)
+            continue
+        inner = card.get("card", {})
+        if not isinstance(inner, Mapping):
+            continue
+        inner2 = inner.get("card", {})
+        if not isinstance(inner2, Mapping):
+            continue
+        type_name = inner2.get("@type", "")
+        if "GridWidget" not in type_name:
+            continue
+        grid = inner2.get("gridElements", {})
+        if not isinstance(grid, Mapping):
+            continue
+        info_style = grid.get("infoWithStyle", {})
+        if not isinstance(info_style, Mapping):
+            continue
+        rest_list = info_style.get("restaurants", [])
+        if not isinstance(rest_list, Sequence):
+            continue
+        for rest in rest_list:
+            if isinstance(rest, Mapping):
+                info = rest.get("info", {})
+                if isinstance(info, Mapping):
+                    restaurants.append(info)
+    return restaurants
+
+
 def parse_discovery_page(
     payload: Mapping[str, object], evidence: SourceEvidence
 ) -> DiscoveryPage:
     """Parse one provider payload without performing I/O or retaining raw data."""
 
     root = _as_mapping(payload, evidence, "payload must be an object")
-    status = root.get("status_message", "success")
-    if status != "success" or root.get("error") is not None:
+    status = root.get("status_message", root.get("statusMessage", "success"))
+    if status not in ("success", "done successfully") or root.get("error") is not None:
         raise ProviderResponseError(f"{evidence.endpoint_id} returned a provider error")
-    cards = root.get("cards")
-    if not isinstance(cards, Sequence) or isinstance(cards, (str, bytes)):
+    raw_cards = root.get("cards")
+    if not isinstance(raw_cards, Sequence) or isinstance(raw_cards, (str, bytes)):
         raise _schema_error(evidence, "cards must be a sequence")
-    venues = tuple(
-        _venue_from_card(
-            _as_mapping(card, evidence, "card must be an object"), evidence
+    restaurant_infos = _extract_restaurant_cards(raw_cards)
+    # If no GridWidget restaurants found, treat cards as flat venue cards
+    # (preserves schema-drift detection for malformed fixtures)
+    if not restaurant_infos:
+        restaurant_infos = [
+            card if isinstance(card, Mapping) else {} for card in raw_cards
+        ]
+    venues: tuple[VenueRecord, ...]
+    if not restaurant_infos:
+        venues = ()
+    else:
+        venues = tuple(
+            _venue_from_card(
+                info
+                if "provider_venue_id" in info
+                else _normalize_restaurant_info(info, evidence),
+                evidence,
+            )
+            for info in restaurant_infos
         )
-        for card in cards
-    )
     return DiscoveryPage(venues=venues, next_cursor=_cursor(root))
 
 

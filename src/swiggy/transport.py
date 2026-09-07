@@ -23,6 +23,7 @@ from swiggy.errors import (
 from swiggy.redaction import redact_text
 
 _PATH_PARAMETER = re.compile(r"\{([a-zA-Z][a-zA-Z0-9_]*)\}")
+_NEXT_DATA = re.compile(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', re.DOTALL)
 _SAFE_RESPONSE_HEADERS = frozenset(
     {"content-type", "content-length", "etag", "last-modified", "cache-control"}
 )
@@ -92,13 +93,16 @@ class SwiggyTransport:
         )
         self._validate_semantics(endpoint, response)
         payload: object | None = None
-        if "application/json" in response.headers.get("content-type", "").casefold():
+        content_type = response.headers.get("content-type", "").casefold()
+        if "application/json" in content_type:
             try:
                 payload = response.json()
             except (ValueError, json.JSONDecodeError) as error:
                 raise ProviderResponseError(
                     f"endpoint {endpoint.id!r} returned invalid JSON"
                 ) from error
+        elif "text/html" in content_type:
+            payload = self._extract_next_data(response.text, endpoint.id)
         safe_headers = {
             key: value
             for key, value in response.headers.items()
@@ -231,20 +235,48 @@ class SwiggyTransport:
         aliases = {
             "restaurant_links": "/restaurants/",
             "next_offset": "nextoffset",
-            "offer_text": "off on pre-booking",
-            "restaurant_id": "restaurantid",
-            "rating_count": "ratings",
+            "offer_text": "off on",
+            "restaurant_id": "provider_venue_id",
+            "rating_count": "rating",
         }
-        missing = [
-            field
-            for field in endpoint.observed_fields
-            if aliases.get(field, field).casefold() not in text
-        ]
+        missing: list[str] = []
+        for field in endpoint.observed_fields:
+            alias = aliases.get(field, field).casefold()
+            if alias not in text:
+                # Check secondary aliases for multi-format fields
+                secondary = {
+                    "restaurant_id": ("restaurantid", "restaurant_id"),
+                }.get(field, ())
+                if not any(alt in text for alt in secondary):
+                    missing.append(field)
         if missing:
             raise ProviderResponseError(
                 f"endpoint {endpoint.id!r} failed semantic field check: "
                 f"{', '.join(missing)}"
             )
+
+    @staticmethod
+    def _extract_next_data(text: str, endpoint_id: str) -> object:
+        """Extract and normalize the __NEXT_DATA__ JSON payload from HTML."""
+        match = _NEXT_DATA.search(text)
+        if match is None:
+            raise ProviderResponseError(
+                f"endpoint {endpoint_id!r} returned HTML without __NEXT_DATA__"
+            )
+        try:
+            data = json.loads(match.group(1))
+        except (ValueError, json.JSONDecodeError) as error:
+            raise ProviderResponseError(
+                f"endpoint {endpoint_id!r} __NEXT_DATA__ is invalid JSON"
+            ) from error
+        page_props = data.get("props", {}).get("pageProps", {})
+        widget_response = page_props.get("widgetResponse", {})
+        success = widget_response.get("success")
+        if not isinstance(success, dict):
+            raise ProviderResponseError(
+                f"endpoint {endpoint_id!r} widgetResponse.success missing"
+            )
+        return success
 
     def close(self) -> None:
         if self._owns_client:

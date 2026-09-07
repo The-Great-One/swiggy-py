@@ -64,10 +64,23 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Implication:** High rating alone does not qualify a venue as trending. Missing timestamps or freshness markers produce `insufficient evidence` rather than inferred trends. Distance is reported separately and does not silently alter quality.
 - **Limitation:** The current normalized model has no dedicated new/listed/campaign timestamp field, so freshness remains unavailable unless an explicit provider attribute is present.
 
+### 2026-09-07 — Live smoke test: guest discovery returns real venues
+
+- **Observation:** `swiggy restaurants --latitude 28.4595 --longitude 77.0266 --limit 5` returned real venues (Bheemeshwara, Dosa Coffee, Gokulam, Farzi Cafe, The Beer Cafe Biggie) with ratings, rating counts, cuisines, cost for two, and locality — all marked `LIVE VERIFIED`.
+- **Confidence:** Live HTTP replay from guest endpoint; semantic fields verified.
+- **Implication:** The client works end-to-end for guest discovery without authentication. Swiggy's `/dineout` returns HTML with `__NEXT_DATA__` containing `widgetResponse.success.cards` — a nested widget structure (GridWidget → restaurants → info) that the client now extracts and normalizes.
+- **Limitation:** Default page serves Delhi (provider-selected), not the requested Gurugram coordinates. Venue coordinates are not present in the discovery response. Reviews were not present in the captured detail payload.
+
+### 2026-09-07 — Swiggy HTML response structure
+
+- **Observation:** Swiggy's `/dineout` endpoint returns `text/html` with an embedded `<script id="__NEXT_DATA__">` containing JSON. The JSON path is `props.pageProps.widgetResponse.success` with keys: `statusMessage` ("done successfully"), `pageOffset.nextOffset`, `cards` (widget array), `firstOffsetRequest`, `nextFetch`.
+- **Confidence:** Live verified via HTTP replay.
+- **Implication:** Transport must extract `__NEXT_DATA__` from HTML, not attempt `json.loads()` on the raw response. The `cards` array contains mixed widget types (HeaderContent, InlineViewFilterSortWidget, GridWidget, ShowMoreButton, etc.) — only GridWidget cards contain restaurant data.
+- **Card structure:** GridWidget → `card.card.gridElements.infoWithStyle.restaurants[]` → each restaurant has `info: {id, name, rating: {value, count}, costForTwo, cuisines, locality, locationInfo, offerInfoV2, highlights, mediaFiles}`.
+
 ## Open investigation questions
 
-- Which current guest web contract powers nearby Dineout discovery?
-- Which identifier links discovery cards to details, offers, reviews, and menu data?
+- Which guest web contract powers location-specific (non-default) Dineout discovery?
 - Are review timestamps and pagination exposed sufficiently for momentum scoring?
 - Which nightlife/facility attributes are explicit versus presentation-only labels?
 - Which Dineout fields require app authentication or device context?
