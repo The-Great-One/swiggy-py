@@ -1,0 +1,12 @@
+{
+  "schema_version": "1",
+  "query": {
+    "command": "restaurants",
+    "radius_km": 15.0,
+    "location_source": "explicit",
+    "limit": 100
+  },
+  "results": [],
+  "partial": false,
+  "errors": []
+}

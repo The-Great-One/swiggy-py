@@ -10,7 +10,7 @@ from typing import Any, Protocol
 
 from swiggy.discovery import DiscoveryService
 from swiggy.errors import ConfigurationError
-from swiggy.models import EnrichmentFailure, VenueRecord
+from swiggy.models import Coordinates, EnrichmentFailure, VenueRecord
 from swiggy.offers import parse_offers
 from swiggy.provenance import EvidenceState, SourceEvidence
 from swiggy.ranking import rank_venues
@@ -106,9 +106,30 @@ class SwiggyClient:
         return tuple(self._enrichment_failures)
 
     def search_nearby(
-        self, *, max_pages: int = 10, max_results: int = 100
+        self,
+        *,
+        max_pages: int = 10,
+        max_results: int = 100,
+        radius_km: float | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
     ) -> tuple[VenueRecord, ...]:
+        if (latitude is None) != (longitude is None):
+            raise ConfigurationError("provide both latitude and longitude")
         venues = self.discovery.nearby(max_pages=max_pages, max_results=max_results)
+        if radius_km is not None:
+            if radius_km <= 0:
+                raise ConfigurationError("radius must be greater than zero")
+            if latitude is None or longitude is None:
+                raise ConfigurationError(
+                    "radius filtering requires explicit latitude and longitude"
+                )
+            origin = Coordinates(latitude=latitude, longitude=longitude)
+            venues = tuple(
+                result.venue
+                for result in rank_venues(venues, mode="top-rated", origin=origin)
+                if result.distance_km is not None and result.distance_km <= radius_km
+            )
         self._venues.update({venue.provider_venue_id: venue for venue in venues})
         return venues
 
@@ -243,19 +264,33 @@ class SwiggyClient:
         mode: str,
         *,
         radius_km: float | None = None,
+        latitude: float | None = None,
+        longitude: float | None = None,
         limit: int = 100,
         max_workers: int = 4,
     ) -> tuple[VenueRecord, ...]:
         venues = self.enrich(
-            self.search_nearby(max_results=limit), max_workers=max_workers
+            self.search_nearby(
+                max_results=limit,
+                radius_km=radius_km,
+                latitude=latitude,
+                longitude=longitude,
+            ),
+            max_workers=max_workers,
         )
         if self.ranker is not None:
             if callable(self.ranker):
                 return self.ranker(venues, mode=mode, radius_km=radius_km, limit=limit)
             return self.ranker.rank(venues, mode=mode, radius_km=radius_km, limit=limit)
+        origin = (
+            Coordinates(latitude=latitude, longitude=longitude)
+            if latitude is not None and longitude is not None
+            else None
+        )
         ranked = rank_venues(
             venues,
             mode=mode,
+            origin=origin,
             limit=limit,
         )
         return tuple(item.venue for item in ranked)
