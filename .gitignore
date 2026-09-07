@@ -14,8 +14,9 @@ dist/
 build/
 *.egg-info/
 
-# Local Hermes continuity, credentials and captures
+# Local Hermes continuity, credentials, captures and tooling metadata
 .hermes.md
+.serena/
 .env
 *.har
 *.apk

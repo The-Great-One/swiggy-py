@@ -1,0 +1,17 @@
+{
+  "log": {
+    "entries": [
+      {
+        "request": {
+          "method": "GET",
+          "url": "https://api.example.invalid/v1/dineout?token=TEST_VALUE_123",
+          "headers": [
+            {"name": "Authorization", "value": "Bearer TEST_VALUE_123"}
+          ],
+          "postData": {"text": "phone=9999999999&lat=28.6139&lng=77.2090"}
+        },
+        "response": {"content": {"text": "private response body"}}
+      }
+    ]
+  }
+}

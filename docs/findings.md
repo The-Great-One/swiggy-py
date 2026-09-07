@@ -42,6 +42,13 @@ Never include credentials, cookies, OTPs, phone numbers, account identifiers, ex
 - **Implication:** Server-rendered page data is a potential guest discovery source, but the observed default page showed Delhi, not an approved Gurugram query. Do not claim nearby Gurugram support from this observation.
 - **Privacy:** The surrounding widget envelope contains session/device identifiers and encoded location context; retain only allowlisted restaurant fields in public fixtures.
 
+### 2026-09-07 — Capture sanitization boundary
+
+- **Observation:** Reconnaissance utilities retain only method, host, path, scope, and evidence state from HAR-like input; headers, query/body values, response bodies, and device/session fields are discarded rather than copied.
+- **Confidence:** Fixture-tested implementation.
+- **Implication:** Raw browser captures stay outside Git. Derived route inventory is safe to reconcile against `API_ENDPOINTS.md`, but it is not proof that a route is replayable or semantically successful.
+- **Discarded approach:** Retaining redacted response payloads was rejected because even partially sanitized authenticated payloads can preserve unnecessary personal or session data.
+
 ## Open investigation questions
 
 - Which current guest web contract powers nearby Dineout discovery?
